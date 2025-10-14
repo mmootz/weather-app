@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: weather
+  name: weather
+  namespace: weather-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: weather
+    spec:
+      containers:
+      - image: weather_api:v2
+        name: weather-api-cc96r
+        ports:
+          - containerPort: 5000
+        env:
+        - name: REDIS_HOST
+          value: redis
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources: {}
+status: {}
