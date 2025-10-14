@@ -19,7 +19,7 @@ spec:
         app: weather
     spec:
       containers:
-      - image: weather_api:v2
+      - image: weather_api:v4
         name: weather-api-cc96r
         ports:
           - containerPort: 5000
@@ -32,5 +32,12 @@ spec:
             port: 5000
           initialDelaySeconds: 5
           periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 5000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
         resources: {}
 status: {}
