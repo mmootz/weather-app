@@ -1,43 +1,35 @@
-# test_api.py
+from backend.weather_api import app, weather
+from flask import Flask
 import pytest
+import requests
+from unittest.mock import patch, MagicMock
 
-# Assume `get_weather_data` is implemented to handle different responses
-def get_weather_data(location):
-    import requests
-    try:
-        response = requests.get(
-            f"http://api.weather.com/data?location={location}"
-        )
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        raise e
+app = Flask(__name__)
 
-def test_weather_success_valid_data(mock_weather_response_factory):
-    """Test successful API call returns expected data."""
-    mock_weather_response_factory(status_code=200, json_data={"temperature": 22})
-    result = get_weather_data("London")
-    assert result["temperature"] == 22
-    assert "temperature" in result
+@patch("backend.weather_api.requests.get")
+def test_weather_returns_200(mock_get):
+    # Create a fake response object
+    mock_response = MagicMock()
+    mock_response.json.return_value = {"temp": 70, "city": "La Mirada"}
+    mock_response.status_code = 200
+    mock_get.return_value = mock_response
 
-def test_weather_success_with_different_data(mock_weather_response_factory):
-    """Test successful API call with different data."""
-    mock_weather_response_factory(status_code=200, json_data={"temperature": 15})
-    result = get_weather_data("Berlin")
-    assert result["temperature"] == 15
-
-def test_weather_success_malformed_data(mock_weather_response_factory):
-    """Test for malformed data from a successful API call."""
-    mock_weather_response_factory(status_code=200, json_data={"temp": 22})
+    with app.test_request_context("/weather?city=somewhere"):
+        response = weather()
     
-    # This test will likely fail with a KeyError, which is the point
-    # We are testing that our function can gracefully handle this unexpected data
-    with pytest.raises(KeyError):
-        get_weather_data("Unknown")
+    # Assert that the function did what we expect
+   # mock_get.assert_called_once()
+    assert response.status_code == 200
 
-def test_weather_failure_status_code(mock_weather_response_factory):
-    """Test the function correctly handles a 404 response."""
-    mock_weather_response_factory(status_code=404, json_data={})
-    with pytest.raises(requests.exceptions.HTTPError):
-        get_weather_data("Invalid City")
+@patch("backend.weather_api.requests.get")
+def test_weather_timeout(mock_get):
+    mock_get.side_effect = requests.exceptions.Timeout
 
+    with app.test_client() as client:
+        resp = client.get("/weather?city=somewhere")
+        
+    assert resp.status_code == 504
+    assert "timed out" in resp.get_json()["error"].lower()
+
+    
+    

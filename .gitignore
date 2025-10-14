@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+#my adds
+plan.txt
+k8s/weather-app.conf
+
 # Distribution / packaging
 .Python
 build/

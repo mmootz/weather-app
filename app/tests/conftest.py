@@ -2,35 +2,17 @@
 # conftest.py
 import pytest
 import requests
+import os
+from backend.weather_api import weather
 
-@pytest.fixture
-def weather_api_success_factory(monkeypatch):
-    """
-    Returns a factory function to create a mock for a successful API call.
-    """
-    def make_mock_response(temperature):
-        """Creates a mock response with a specified temperature."""
-        class MockResponse:
-            def raise_for_status(self):
-                pass
-            def json(self):
-                return {"temperature": temperature}
-        
-        def mock_get(*args, **kwargs):
-            return MockResponse()
+@pytest.fixture(scope='module')
+def test_weather_api():
+    # Set the Testing configuration prior to creating the Flask application
+    os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
+    flask_app = weather()
 
-        monkeypatch.setattr("backend.weather_api.weather", mock_get)
-    
-    return make_mock_response
-
-@pytest.fixture
-def mock_weather_timeout(monkeypatch):
-    """Mocks a requests.exceptions.Timeout error during an API call."""
-    def mock_get(*args, **kwargs):
-        raise requests.exceptions.Timeout("API request timed out")
-    monkeypatch.setattr("backend.weather_api.weather.get", mock_get)
-
-    
-    
-    
-
+    # Create a test client using the Flask application configured for testing
+    with flask_app.test_client() as testing_client:
+        # Establish an application context
+        with flask_app.app_context():
+            yield testing_client  # this is where the testing happens!
