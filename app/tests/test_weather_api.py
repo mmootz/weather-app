@@ -1,6 +1,6 @@
 from backend.weather_api import app, weather
 from flask import Flask
-import pytest
+#import pytest
 import requests
 from unittest.mock import patch, MagicMock
 
