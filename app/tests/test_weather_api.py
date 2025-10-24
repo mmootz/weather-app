@@ -1,12 +1,26 @@
-from backend.weather_api import app
+"""
+Tests for
+timeout
+network error
+healthz
+ready
+200 ok
+"""
+
+
 from unittest.mock import patch
+from backend.weather_api import app
+import redis
 import requests
+
 
 
 @patch("backend.weather_api.requests.get")
 def test_weather_timeout(mock_get):
-    mock_get.side_effect = requests.exceptions.Timeout  # Simulate timeout
-
+    """
+    Simulate timeout
+    """
+    mock_get.side_effect = requests.exceptions.Timeout
     with app.test_client() as client:
         resp = client.get("/weather?city=somewhere")
 
@@ -16,6 +30,9 @@ def test_weather_timeout(mock_get):
 
 @patch("backend.weather_api.requests.get")
 def test_weather_api_failure(mock_get):
+    """
+    Simulate network error
+    """
     mock_get.side_effect = requests.exceptions.RequestException("Network error")
 
     with app.test_client() as client:
@@ -26,6 +43,9 @@ def test_weather_api_failure(mock_get):
     assert "failed to fetch" in data["error"].lower()
 
 def test_healthz():
+    """
+    test healthz for health probe
+    """
     with app.test_client() as client:
         resp = client.get("/healthz")
 
@@ -33,8 +53,11 @@ def test_healthz():
     data = resp.get_json()
     assert data["status"] == "Healthy"
 
-@patch("backend.weather_api.redis_client")
+@patch("backend.weather_api.REDIS_CLIENT")
 def test_ready_ok(mock_redis):
+    """
+    200 ok
+    """
     mock_redis.ping.return_value = True
 
     with app.test_client() as client:
@@ -43,9 +66,11 @@ def test_ready_ok(mock_redis):
     assert resp.status_code == 200
     assert resp.get_json()["status"] == "ready"
 
-@patch("backend.weather_api.redis_client")
+@patch("backend.weather_api.REDIS_CLIENT")
 def test_ready_redis_down(mock_redis):
-    import redis
+    """
+    Test connection to redis
+    """
     mock_redis.ping.side_effect = redis.exceptions.ConnectionError("Cannot connect")
 
     with app.test_client() as client:
@@ -55,9 +80,3 @@ def test_ready_redis_down(mock_redis):
     data = resp.get_json()
     assert data["status"] == "not ready"
     assert "redis connection failed" in data["reason"].lower()
-
-
-
-
-    
-    

@@ -1,12 +1,19 @@
+"""
+This isn't used yet
+
+"""
 
 # conftest.py
-import pytest
-import requests
 import os
+import pytest
+
 from backend.weather_api import weather
 
 @pytest.fixture(scope='module')
 def test_weather_api():
+    """
+    currently not used
+    """
     # Set the Testing configuration prior to creating the Flask application
     os.environ['CONFIG_TYPE'] = 'config.TestingConfig'
     flask_app = weather()
