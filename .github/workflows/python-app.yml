@@ -13,8 +13,13 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    uses: mmootz/weather_app/.github/workflows/pylint.yml@main
+    permissions:
+      contents: read
+  
   build:
-
+    needs: [lint]
     runs-on: ubuntu-latest
 
     steps:
