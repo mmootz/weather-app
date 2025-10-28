@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   lint:
-    uses: mmootz/weather_app/.github/workflows/pylint.yml@main
+    uses: mmootz/weather-app/.github/workflows/pylint.yml@main
     permissions:
       contents: read
   
