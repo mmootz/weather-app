@@ -9,6 +9,15 @@ on:
   pull_request:
     branches: [ "main" ]
 
+  workflow_call:
+    inputs:
+      config-path:
+        required: true
+        type: string
+    secrets:
+      token:
+        required: true
+
 permissions:
   contents: read
 
