@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  checks: write
 
 jobs:
   lint:
@@ -46,3 +47,6 @@ jobs:
         report_paths: '**/junit.xml'
         detailed_summary: true
         include_passed: true
+  image:
+    needs: [build]
+    uses: mmootz/weather-app/.github/workflows/docker-image.yml@main
