@@ -14,13 +14,15 @@ import redis
 import requests
 
 
-
+@patch("backend.weather_api.redis_client")
 @patch("backend.weather_api.requests.get")
-def test_weather_timeout(mock_get):
+def test_weather_timeout(mock_get, mock_redis):
     """
     Simulate timeout
     """
     mock_get.side_effect = requests.exceptions.Timeout
+    mock_redis.get.return_value = None  # Pretend cache is empty
+    mock_redis.setex.return_value = True
     with app.test_client() as client:
         resp = client.get("/weather?city=somewhere")
 
@@ -28,13 +30,14 @@ def test_weather_timeout(mock_get):
     data = resp.get_json()
     assert "timed out" in data["error"].lower()
 
+@patch("backend.weather_api.redis_client")
 @patch("backend.weather_api.requests.get")
-def test_weather_api_failure(mock_get):
+def test_weather_api_failure(mock_get, mock_redis):
     """
     Simulate network error
     """
     mock_get.side_effect = requests.exceptions.RequestException("Network error")
-
+    mock_redis.get.return_value = None
     with app.test_client() as client:
         resp = client.get("/weather?city=nowhere")
 
