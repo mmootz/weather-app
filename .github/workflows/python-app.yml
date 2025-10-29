@@ -6,17 +6,6 @@ name: Python application
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  workflow_call:
-    inputs:
-      config-path:
-        required: true
-        type: string
-    secrets:
-      token:
-        required: true
 
 permissions:
   contents: read
@@ -24,8 +13,6 @@ permissions:
 jobs:
   lint:
     uses: mmootz/weather-app/.github/workflows/pylint.yml@main
-    permissions:
-      contents: read
   
   build:
     needs: [lint]
