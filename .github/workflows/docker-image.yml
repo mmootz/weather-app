@@ -17,4 +17,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file app\backend\Dockerfile --tag weather-api:$(date +%s)
+      run: docker build app/backend/ --tag weather-api:$(date +%s)
