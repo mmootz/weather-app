@@ -53,7 +53,7 @@ def test_healthz():
     data = resp.get_json()
     assert data["status"] == "Healthy"
 
-@patch("backend.weather_api.REDIS_CLIENT")
+@patch("backend.weather_api.redis_client")
 def test_ready_ok(mock_redis):
     """
     200 ok
@@ -66,7 +66,7 @@ def test_ready_ok(mock_redis):
     assert resp.status_code == 200
     assert resp.get_json()["status"] == "ready"
 
-@patch("backend.weather_api.REDIS_CLIENT")
+@patch("backend.weather_api.redis_client")
 def test_ready_redis_down(mock_redis):
     """
     Test connection to redis
