@@ -9,6 +9,8 @@ __pycache__/
 #my adds
 plan.txt
 k8s/weather-app.conf
+infra/live/stage/services/cluster/.terraform.lock.hcl
+infra/live/stage/services/cluster/.terraform/
 
 # Distribution / packaging
 .Python
