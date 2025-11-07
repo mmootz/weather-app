@@ -1,0 +1,16 @@
+# Use official NGINX image
+FROM nginx:alpine
+
+# Remove default site content
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy your app files into the NGINX web root
+COPY . /usr/share/nginx/html
+
+# Optional: custom NGINX config (for SPA routing or caching)
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80 for serving traffic
+EXPOSE 80
+
+# NGINX starts automatically (from base image CMD)

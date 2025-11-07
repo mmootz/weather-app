@@ -12,9 +12,12 @@ k8s/weather-app.conf
 
 infra/live/stage/services/cluster/.terraform.lock.hcl
 infra/live/stage/services/cluster/.terraform/
+infra/live/stage/services/cluster/*.txt
 infra/live/stage/services/weather-app/.terraform/
 infra/modules/eks-cluster/.terraform/
 infra/modules/eks-cluster/.terraform.lock.hcl
+
+
 # Distribution / packaging
 .Python
 build/

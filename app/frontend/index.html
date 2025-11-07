@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Weather Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: #fff;
+      text-align: center;
+      margin-top: 100px;
+    }
+    .weather-card {
+      display: inline-block;
+      background: #333;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+    .temp {
+      font-size: 3rem;
+    }
+    .update-time {
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div class="weather-card">
+    <h1>🌤 Current Weather</h1>
+    <p id="location">Loading...</p>
+    <img id="icon"> </p>
+    <p class="temp" id="temperature">-- °C</p>
+    <p id="description">--</p>
+    <p class="update-time" id="last-updated"></p>
+  </div>
+            
+  <script> // https://api.weather.gov/stations/KLNS/observations/latest
+    const API_URL = "https://api.weather.gov/stations/KLNS/observations/latest"; // update to match your backend route
+    const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+     // http://localhost:5000/api/weather/"
+    async function fetchWeather() {
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        // Convert from C to F
+        const tempC = data.properties.temperature.value
+        const tempF = (tempC * 9/5) + 32;
+
+        document.getElementById('location').textContent = data.properties.stationName || "Unknown location";
+        document.getElementById('icon').src = data.properties.icon
+        document.getElementById('temperature').textContent = `${tempF.toFixed(1)} °F`;
+        document.getElementById('description').textContent = data.properties.textDescription;
+        document.getElementById('last-updated').textContent = 
+          "Last updated: " + data.properties.timestamp;
+      
+      
+      
+      
+      
+      
+        } catch (err) {
+        console.error("Error fetching weather:", err);
+        document.getElementById('description').textContent = "Error loading data";
+      }
+    }
+
+    // Initial load
+    fetchWeather();
+
+    // Refresh automatically
+    setInterval(fetchWeather, REFRESH_INTERVAL);
+  </script>
+</body>
+</html>
