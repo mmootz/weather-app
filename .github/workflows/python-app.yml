@@ -50,3 +50,6 @@ jobs:
   image:
     needs: [build]
     uses: mmootz/weather-app/.github/workflows/build_images.yml@main
+    permissions:
+      contents: read
+      packages: write
