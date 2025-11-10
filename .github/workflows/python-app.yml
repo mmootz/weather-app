@@ -49,4 +49,4 @@ jobs:
         include_passed: true
   image:
     needs: [build]
-    uses: mmootz/weather-app/.github/workflows/docker-image.yml@main
+    uses: mmootz/weather-app/.github/workflows/build_images.yml@main
