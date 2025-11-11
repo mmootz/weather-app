@@ -18,5 +18,21 @@ spec:
           image: "{{ .Values.backend.repository}}:{{ .Values.backend.tag }}"
           ports:
             - containerPort: {{ .Values.backend_service.port }}
+          env:
+          - name: REDIS_HOST
+            value: redis
+          livenessProbe:
+            httpGet: 
+              path: /healthz
+              port: {{ .Values.backend_service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.backend_service.port }}
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
