@@ -38,10 +38,9 @@
     <p class="update-time" id="last-updated"></p>
   </div>
             
-  <script> // https://api.weather.gov/stations/KLNS/observations/latest
-    const API_URL = "https://api.weather.gov/stations/KLNS/observations/latest"; // update to match your backend route
+  <script> // Refresh every five minutes
+    const API_URL = "http://backend.weather-app.svc.cluster.local:5000/weather"; 
     const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
-     // http://localhost:5000/api/weather/"
     async function fetchWeather() {
       try {
         const response = await fetch(API_URL);
@@ -57,12 +56,7 @@
         document.getElementById('description').textContent = data.properties.textDescription;
         document.getElementById('last-updated').textContent = 
           "Last updated: " + data.properties.timestamp;
-      
-      
-      
-      
-      
-      
+
         } catch (err) {
         console.error("Error fetching weather:", err);
         document.getElementById('description').textContent = "Error loading data";
