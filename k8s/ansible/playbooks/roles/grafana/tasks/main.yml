@@ -1,0 +1,7 @@
+- name: Deploy prometheus and grafana
+  kubernetes.core.helm:
+    name: kube-prometheus-stack
+    chart_repo_url: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+    chart_ref: kube-prometheus-stack
+    release_namespace: kube-system
+    kubeconfig: "{{ kubeconfig }}"

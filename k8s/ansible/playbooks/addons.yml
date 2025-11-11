@@ -1,0 +1,10 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    kubeconfig: ../../../kconfig.yml
+  roles:
+    - metrics-server
+    # - grafana
+    # - istio
+    # - promethues 
