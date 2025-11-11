@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: weather-app
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: "{{ .Values.backend.repository}}:{{ .Values.backend.tag }}"
+          ports:
+            - containerPort: {{ .Values.backend_service.port }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

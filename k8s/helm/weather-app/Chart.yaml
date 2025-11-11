@@ -1,0 +1,4 @@
+apiVersion: v2
+name: weather-app
+description: Deploy weather app with helm
+version: 0.1.0
