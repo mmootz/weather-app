@@ -24,7 +24,10 @@ backend_service:
 
 resources:
   limits:
-     cpu: 200m
+     cpu: 400m # 200m double cpu useage
      memory: 256Mi
 
-
+hpa:
+  cpu: 80
+  min: 1
+  max: 10
