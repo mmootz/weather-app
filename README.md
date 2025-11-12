@@ -1,6 +1,8 @@
 # weather-app
 weather app to demo infra, k8s, python and monitoring
 
+
+
 TODO:
 
 terraform tests in infra 
@@ -19,3 +21,8 @@ github actions
 add linter for helm charts to linter
 
 add diagram
+
+add  
+<ingress node ip>  weather.local 
+
+to /etc/hosts

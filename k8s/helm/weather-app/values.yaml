@@ -15,7 +15,7 @@ redis_service:
   port: 6379 
 
 frontend_service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
 
 backend_service:

@@ -1,0 +1,7 @@
+- name: Deploy argocd
+  kubernetes.core.helm:
+    name: argocd
+    chart_repo_url: https://argoproj.github.io/argo-helm
+    chart_ref: argocd
+    release_namespace: argocd
+    kubeconfig: "{{ kubeconfig }}"

@@ -32,14 +32,14 @@
   <div class="weather-card">
     <h1>🌤 Current Weather</h1>
     <p id="location">Loading...</p>
-    <img id="icon"> </p>
+    <img id="icon">
     <p class="temp" id="temperature">-- °C</p>
     <p id="description">--</p>
     <p class="update-time" id="last-updated"></p>
   </div>
             
   <script> // Refresh every five minutes
-    const API_URL = "http://backend.weather-app.svc.cluster.local:5000/weather"; 
+    const API_URL = "http://weather.local/weather"; 
     const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
     async function fetchWeather() {
       try {
