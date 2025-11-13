@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: backend
   namespace: weather-app
+  annotations:
+    argocd.argoproj.io/tracking-id: weather-app:/Service:weather-app/backend
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
