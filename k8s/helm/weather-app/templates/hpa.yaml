@@ -2,7 +2,6 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: backend-hpa
-  namespace: weather-app
   annotations:
     argocd.argoproj.io/tracking-id: weather-app:autoscaling/HorizontalPodAutoscaler:weather-app/backend-hpa
 spec:
