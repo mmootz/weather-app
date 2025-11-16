@@ -3,12 +3,12 @@ replicas: 2
 backend:
   repository: ghcr.io/mmootz/backend
   tag: main
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 frontend:
   repository: ghcr.io/mmootz/frontend
   tag: main
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 redis_service:
   type: ClusterIP
