@@ -2,9 +2,9 @@
   connection: local
   gather_facts: no
   vars:
-    kubeconfig: ../../../kconfig.yml
+    kubeconfig: ../../../kubeconfig.yaml
   roles:
     - metrics-server
-    # - grafana
-    # - istio
-    # - promethues 
+    - grafana
+    - istio
+    - argocd

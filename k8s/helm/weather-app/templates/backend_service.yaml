@@ -6,6 +6,8 @@ metadata:
     app: backend
   name: backend
   namespace: weather-app
+  annotations:
+    argocd.argoproj.io/tracking-id: weather-app:/Service:weather-app/backend
 spec:
   ports:
   - name: backend

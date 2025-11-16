@@ -9,7 +9,7 @@ __pycache__/
 #my adds
 plan.txt
 k8s/weather-app.conf
-
+kubeconfig.yaml
 infra/live/stage/services/cluster/.terraform.lock.hcl
 infra/live/stage/services/cluster/.terraform/
 infra/live/stage/services/cluster/*.txt

@@ -6,6 +6,8 @@ metadata:
     app: redis
   name: redis
   namespace: weather-app
+  annotations:
+    argocd.argoproj.io/tracking-id: weather-app:apps/Deployment:weather-app/redis
 spec:
   replicas: 1
   selector:

@@ -3,6 +3,8 @@ kind: Deployment
 metadata:
   name: frontend
   namespace: weather-app
+  annotations:
+    argocd.argoproj.io/tracking-id: weather-app:apps/Deployment:weather-app/frontend
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
