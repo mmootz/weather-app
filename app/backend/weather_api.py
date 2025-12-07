@@ -72,4 +72,5 @@ def readiness_check():
         return jsonify({"status": "not ready", "reason" : "redis connection failed"}), 503
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    pass
+
