@@ -2,6 +2,8 @@
   kubernetes.core.helm:
     name: argocd
     chart_repo_url: https://argoproj.github.io/argo-helm
-    chart_ref: argo-cd
+    chart_ref: argo/argo-cd
     release_namespace: argocd
     kubeconfig: "{{ kubeconfig }}"
+    values_files:
+      - argo_values.yaml
