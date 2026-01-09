@@ -4,10 +4,14 @@ Get weather from station along with health and ready checks.
 """
 
 import os
+import csv
 import json
 import redis
 import requests
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
+from zipcodes import load_zipcodes, zipcode_lookup
+
+load_zipcodes()
 
 app = Flask(__name__)
 
@@ -16,37 +20,86 @@ try:
 except redis.exceptions.ConnectionError as error:
     redis_client = None
 
-@app.route("/weather")
-def weather():
-    """
-    Call api.weather.gov station
-    check if last request was more than 10 min ago
-    if more call api and store data in redis.
-    """
-    city = request.args.get("city", "Intercourse")
-    cache_key = f"weather:{city.lower()}"
+session = requests.Session()
+session.headers.update({
+    "User-Agent" : "weather-app (mattmootz@gmail.com)"
+})
 
-    cached = redis_client.get(cache_key)
-    if cached:
-        return jsonify(json.loads(cached))
 
-    try:
-        resp = requests.get(
-            "https://api.weather.gov/stations/KLNS/observations/latest",
+def api_call(url):
+     try:
+        resp = session.get(
+            url,
              timeout=5
            )
         resp.raise_for_status()
         data = resp.json()
 
-        redis_client.setex(cache_key, 600, json.dumps(data))
-        return jsonify(data), 200
+        return data, 200
 
-    except requests.exceptions.Timeout:
+     except requests.exceptions.Timeout:
         return jsonify({"error": "Request timed out"}), 504
 
-    except requests.exceptions.RequestException as request_error:
+     except requests.exceptions.RequestException as request_error:
         app.logger.error("Weather API failed: %s", request_error)
-        return jsonify({"error": "Failed to fetch weather data"}), 502
+        return jsonify({"error": "Failed to fetch weather data"}), 502   
+
+@app.route("/weather")
+def weather():
+    """
+    Call api.weather.gov station
+    check if zipcode is in redis if get data from weather.gov
+    check if last request was more than 10 min ago
+    if more call api and store data in redis.
+    """
+
+    zipcode = request.args.get("zipcode")
+
+    if not zipcode:
+        abort(400, description="zipcode is required")
+    
+    if not zipcode.isdigit() or len(zipcode) !=5:
+        abort(400, description="invalid zipcode")
+
+    
+    lat, lon = zipcode_lookup(zipcode)
+    base_url = "https://api.weather.gov/"
+    get_lat_long = "points/"
+    completed_url = base_url + get_lat_long + str(lat) + "," + str(lon)
+
+    data, status = api_call(completed_url)
+    if status != 200:
+        return jsonify({"error": "Request failed with error code"}), status
+    
+    get_station = data['properties']['observationStations']
+
+    stations, status = api_call(get_station)
+    if status != 200:
+        return jsonify({"error": "Request failed with error code"}), status
+    
+    first_station_identifier = stations['features'][00]['properties']['stationIdentifier']
+    get_weather_header = "stations/"
+    get_weather_footer = "/observations/latest"
+    get_station_weather = base_url + get_weather_header + first_station_identifier + get_weather_footer
+
+    current_weather, status = api_call(get_station_weather)
+
+    if status == 200:
+        # city = request.args.get("city", "Intercourse")
+        # cache_key = f"weather:{city.lower()}"
+
+        # cached = redis_client.get(cache_key)
+        # if cached:
+        #     return jsonify(json.loads(cached))
+        return current_weather
+    else:
+        return jsonify({"error" : "request failed checking current weather" }), status
+
+    
+
+    
+
+   
 
 @app.route("/healthz")
 def liveness_check():
