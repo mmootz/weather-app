@@ -7,11 +7,14 @@ import os
 import redis
 import requests
 from flask import Flask, request, jsonify, abort
-from zipcodes import load_zipcodes, zipcode_lookup
+from flask_cors import CORS
+from app.backend.zipcodes import load_zipcodes, zipcode_lookup
 
 load_zipcodes()
 
 app = Flask(__name__)
+
+CORS(app, resources={r"/weather": {"origins": "*"}})
 
 try:
     redis_client = redis.Redis(host=os.getenv("REDIS_HOST", "localhost"), port=6379)
@@ -98,7 +101,6 @@ def weather():
         return current_weather
     else:
         return jsonify({"error" : "request failed checking current weather" }), status
-
 
 @app.route("/healthz")
 def liveness_check():
