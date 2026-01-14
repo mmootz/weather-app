@@ -7,6 +7,9 @@ ZIPCODES = {}
 
 zipcodedb = os.path.join(current_dir, "data/uszips.csv")
 def load_zipcodes(path=zipcodedb):
+    """
+    load zipcodes from static file
+    """
     global ZIPCODES
     with open(path) as file:
         reader = csv.DictReader(file)

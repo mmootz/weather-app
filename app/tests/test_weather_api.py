@@ -8,8 +8,8 @@ ready
 """
 
 
-from unittest.mock import patch
-from backend.weather_api import app
+from unittest.mock import patch, Mock
+from backend.weather_api import app, api_call
 import redis
 import requests
 
@@ -83,3 +83,18 @@ def test_ready_redis_down(mock_redis):
     data = resp.get_json()
     assert data["status"] == "not ready"
     assert "redis connection failed" in data["reason"].lower()
+@patch("backed.weather_api.api_call")
+def test_api_call_success():
+    """
+    Docstring for test_api_call
+    :param mock_redis: Description
+    """
+    
+    mock_response = Mock()
+    mock_response.raise_for_status.return_value = None
+    mock_response.json.return_value = {"ok" : True}
+
+    with patch("weather_api.requests.get", return_value=mock_response):
+        result = api_call("http://example.com")
+
+    assert result == {"ok" : True }

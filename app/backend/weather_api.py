@@ -4,8 +4,6 @@ Get weather from station along with health and ready checks.
 """
 
 import os
-import csv
-import json
 import redis
 import requests
 from flask import Flask, request, jsonify, abort
@@ -19,7 +17,7 @@ try:
     redis_client = redis.Redis(host=os.getenv("REDIS_HOST", "localhost"), port=6379)
 except redis.exceptions.ConnectionError as error:
     redis_client = None
-
+# user-agent needed to prevent throttle
 session = requests.Session()
 session.headers.update({
     "User-Agent" : "weather-app (mattmootz@gmail.com)"
@@ -27,7 +25,13 @@ session.headers.update({
 
 
 def api_call(url):
-     try:
+    """
+    Docstring for api_call
+    utility function to call url and return json body
+    :param url: url to call api with
+    returns data as json
+    """
+    try:
         resp = session.get(
             url,
              timeout=5
@@ -37,12 +41,12 @@ def api_call(url):
 
         return data, 200
 
-     except requests.exceptions.Timeout:
+    except requests.exceptions.Timeout:
         return jsonify({"error": "Request timed out"}), 504
 
-     except requests.exceptions.RequestException as request_error:
+    except requests.exceptions.RequestException as request_error:
         app.logger.error("Weather API failed: %s", request_error)
-        return jsonify({"error": "Failed to fetch weather data"}), 502   
+        return jsonify({"error": "Failed to fetch weather data"}), 502
 
 @app.route("/weather")
 def weather():
@@ -57,11 +61,11 @@ def weather():
 
     if not zipcode:
         abort(400, description="zipcode is required")
-    
+
     if not zipcode.isdigit() or len(zipcode) !=5:
         abort(400, description="invalid zipcode")
 
-    
+
     lat, lon = zipcode_lookup(zipcode)
     base_url = "https://api.weather.gov/"
     get_lat_long = "points/"
@@ -70,17 +74,17 @@ def weather():
     data, status = api_call(completed_url)
     if status != 200:
         return jsonify({"error": "Request failed with error code"}), status
-    
+
     get_station = data['properties']['observationStations']
 
     stations, status = api_call(get_station)
     if status != 200:
         return jsonify({"error": "Request failed with error code"}), status
-    
+
     first_station_identifier = stations['features'][00]['properties']['stationIdentifier']
-    get_weather_header = "stations/"
-    get_weather_footer = "/observations/latest"
-    get_station_weather = base_url + get_weather_header + first_station_identifier + get_weather_footer
+    weather_header = "stations/"
+    weather_footer = "/observations/latest"
+    get_station_weather = base_url + weather_header + first_station_identifier + weather_footer
 
     current_weather, status = api_call(get_station_weather)
 
@@ -95,11 +99,6 @@ def weather():
     else:
         return jsonify({"error" : "request failed checking current weather" }), status
 
-    
-
-    
-
-   
 
 @app.route("/healthz")
 def liveness_check():
