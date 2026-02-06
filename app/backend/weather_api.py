@@ -8,7 +8,7 @@ import redis
 import requests
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
-from zipcodes import load_zipcodes, zipcode_lookup
+from app.backend.zipcodes import load_zipcodes, zipcode_lookup
 
 load_zipcodes()
 

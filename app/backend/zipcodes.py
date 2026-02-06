@@ -1,3 +1,6 @@
+"""
+load zipcodes for lookup.
+"""
 import os
 import csv
 
