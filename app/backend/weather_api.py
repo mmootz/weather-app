@@ -102,7 +102,6 @@ def weather():
     else:
         return jsonify({"error" : "request failed checking current weather" }), status
 
-
 @app.route("/healthz")
 def liveness_check():
     """
