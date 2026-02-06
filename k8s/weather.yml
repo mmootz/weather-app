@@ -3,24 +3,24 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: weather
-  name: weather
+    app: backend
+  name: backend
   namespace: weather-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: weather
+      app: backend
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: weather
+        app: backend
     spec:
       containers:
-      - image: weather_api:v4
-        name: weather-api-cc96r
+      - image: ghcr.io/mmootz/backend:main
+        name: backend
         ports:
           - containerPort: 5000
         env:

@@ -7,7 +7,7 @@ This isn't used yet
 import os
 import pytest
 
-from backend.weather_api import weather
+from app.backend.weather_api import weather
 
 @pytest.fixture(scope='module')
 def test_weather_api():

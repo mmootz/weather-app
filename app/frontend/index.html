@@ -26,48 +26,93 @@
       font-size: 0.9rem;
       color: #aaa;
     }
+    .zip-input {
+      margin-bottom: 1rem;
+    }
+    input {
+      padding: 0.5rem;
+      font-size: 1rem;
+      width: 120px;
+      text-align: center;
+      border-radius: 0.3rem;
+      border: none;
+    }
+    button {
+      padding: 0.5rem 1rem;
+      margin-left: 0.5rem;
+      font-size: 1rem;
+      border-radius: 0.3rem;
+      border: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="weather-card">
-    <h1>🌤 Current Weather</h1>
-    <p id="location">Loading...</p>
+  
+    <!-- ZIP CODE INPUT -->
+    <div class="zip-input">
+      <input
+        type="text"
+        id="zipcode"
+        placeholder="ZIP code"
+        maxlength="5"
+      />
+      <button onclick="fetchWeather()">Get Weather</button>
+    </div>
+    <h3>Nearest weather station</h3>
+    <p id="location">--</p>
     <img id="icon">
-    <p class="temp" id="temperature">-- °C</p>
+  
+  <div>
+    <p class="temp" id="temperature">-- °F</p>
     <p id="description">--</p>
     <p class="update-time" id="last-updated"></p>
   </div>
-            
-  <script> // Refresh every five minutes
-    const API_URL = "http://weather.local/weather"; 
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:5000/weather";
     const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
     async function fetchWeather() {
+      const zipcode = document.getElementById("zipcode").value.trim();
+
+      if (!zipcode.match(/^\d{5}$/)) {
+        document.getElementById("description").textContent =
+          "Please enter a valid 5-digit ZIP code";
+        return;
+      }
+
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(`${API_URL}?zipcode=${zipcode}`);
         const data = await response.json();
 
         // Convert from C to F
-        const tempC = data.properties.temperature.value
+        const tempC = data.properties.temperature.value;
         const tempF = (tempC * 9/5) + 32;
 
-        document.getElementById('location').textContent = data.properties.stationName || "Unknown location";
-        document.getElementById('icon').src = data.properties.icon
-        document.getElementById('temperature').textContent = `${tempF.toFixed(1)} °F`;
-        document.getElementById('description').textContent = data.properties.textDescription;
-        document.getElementById('last-updated').textContent = 
+        document.getElementById('location').textContent =
+          data.properties.stationName || "Unknown location";
+        document.getElementById('icon').src = data.properties.icon;
+        document.getElementById('temperature').textContent =
+          `${tempF.toFixed(1)} °F`;
+        document.getElementById('description').textContent =
+          data.properties.textDescription;
+        document.getElementById('last-updated').textContent =
           "Last updated: " + data.properties.timestamp;
 
-        } catch (err) {
+      } catch (err) {
         console.error("Error fetching weather:", err);
-        document.getElementById('description').textContent = "Error loading data";
+        document.getElementById('description').textContent =
+          "Error loading data";
       }
     }
 
-    // Initial load
-    fetchWeather();
-
-    // Refresh automatically
-    setInterval(fetchWeather, REFRESH_INTERVAL);
+    // Optional: allow Enter key to submit ZIP
+    document.getElementById("zipcode").addEventListener("keyup", (e) => {
+      if (e.key === "Enter") fetchWeather();
+    });
   </script>
 </body>
 </html>
