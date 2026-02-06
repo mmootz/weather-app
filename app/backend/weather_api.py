@@ -99,8 +99,8 @@ def weather():
         # if cached:
         #     return jsonify(json.loads(cached))
         return current_weather
-    else:
-        return jsonify({"error" : "request failed checking current weather" }), status
+
+    return jsonify({"error" : "request failed checking current weather" }), status
 
 @app.route("/healthz")
 def liveness_check():
