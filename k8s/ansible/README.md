@@ -7,7 +7,7 @@ ansible-galaxy install -r playbook/requirements.yml
 
 install addons
 
-ansible-playbook playbook/addons.yml 
+ansible-playbook playbooks/addons.yml 
 
 
 
