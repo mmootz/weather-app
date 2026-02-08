@@ -5,28 +5,33 @@ import os
 import csv
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
+ZIPCODE_DB = os.path.join(current_dir, "data/uszips.csv")
 
-ZIPCODES = {}
 
-zipcodedb = os.path.join(current_dir, "data/uszips.csv")
-def load_zipcodes(path=zipcodedb):
+def load_zipcodes(path=ZIPCODE_DB):
     """
-    load zipcodes from static file
+    Load zipcodes from static file and return a dict
     """
-    global ZIPCODES
-    with open(path) as file:
+    zipcodes = {}
+
+    with open(path, newline="") as file:
         reader = csv.DictReader(file)
         for row in reader:
-            ZIPCODES[row["zip"]] = (
+            zipcodes[row["zip"]] = (
                 float(row["lat"]),
                 float(row["lng"]),
             )
 
+    return zipcodes
+
+
+# Load once at import time
+ZIPCODES = load_zipcodes()
+
 
 def zipcode_lookup(zipcode):
     """
-    Docstring for zipcode_lookup
-    takes a zipcode and returns lat and log
+    Takes a zipcode and returns (lat, lon)
     """
     try:
         return ZIPCODES[str(zipcode)]
